@@ -9,7 +9,7 @@ export default function Home() {
   
   return (
     <>
-    <div className='p-2 mx-20'>
+    <div>
       <Suspense fallback={null}>
         <EditorComp markdown={markdown} setMarkdown={setMarkdown}/>
       </Suspense>

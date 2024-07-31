@@ -1,8 +1,10 @@
 export default function Page() {
   return (
     <h1>
-      hello world
-      <a href='/edit'>edit</a>
+      <p>hello world</p>
+      <p>
+        <a href='/edit'>edit</a>
+      </p>
     </h1>
   )
 }

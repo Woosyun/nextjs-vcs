@@ -1,17 +1,26 @@
 "use client";
 
 import {
+  BoldItalicUnderlineToggles,
+  CodeToggle,
+  ListsToggle,
   MDXEditor,
   MDXEditorMethods,
+  UndoRedo,
+  diffSourcePlugin,
+  frontmatterPlugin,
   headingsPlugin,
   linkPlugin,
   listsPlugin,
   markdownShortcutPlugin, 
-  quotePlugin
+  quotePlugin,
+  tablePlugin,
+  toolbarPlugin
 } from "@mdxeditor/editor";
 import { FC } from "react";
-// import '@mdxeditor/editor/style.css';
-// import '@/components/Editor.css';
+import '@mdxeditor/editor/style.css';
+// import 'github-markdown-css/github-markdown-dark.css';
+import 'github-markdown-css/github-markdown-light.css';
 
 interface EditorProps {
   markdown: string;
@@ -26,10 +35,29 @@ interface EditorProps {
 const Editor: FC<EditorProps> = ({ markdown, editorRef, setMarkdown }) => {
   return (
     <MDXEditor
+      contentEditableClassName="markdown-body"
       onChange={setMarkdown}
       ref={editorRef}
       markdown={markdown}
-      plugins={[headingsPlugin(), listsPlugin(), linkPlugin(), quotePlugin(), markdownShortcutPlugin()]}
+      plugins={[
+        frontmatterPlugin(),
+        listsPlugin(),
+        linkPlugin(),
+        tablePlugin(),
+        quotePlugin(),
+        headingsPlugin(),
+        toolbarPlugin({
+          toolbarContents: () => (
+            <>
+              <UndoRedo />
+              <BoldItalicUnderlineToggles />
+              <CodeToggle />
+              <ListsToggle />
+            </>
+          ),
+        }),
+        markdownShortcutPlugin()
+      ]}
     />
   );
 };
