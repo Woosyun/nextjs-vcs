@@ -12,6 +12,7 @@ import {
 import { FC } from "react";
 // import '@mdxeditor/editor/style.css';
 // import '@/components/Editor.css';
+// github css style
 
 interface EditorProps {
   markdown: string;
