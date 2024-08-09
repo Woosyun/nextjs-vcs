@@ -22,4 +22,4 @@ type Commit = {
   parentHash: string;
 }
 
-export { Index, Entry, Blob, Tree, Commit};
+export type { Index, Entry, Blob, Tree, Commit};

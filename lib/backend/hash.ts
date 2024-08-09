@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-import * as fs from 'fs';
 import { Entry, Blob, Tree, Commit } from './types';
 
 export function computeHash(content: string) {

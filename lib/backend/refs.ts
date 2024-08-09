@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs';
-import { Commit } from './types';
 import { readObject } from './object';
 
 type BranchType = 0 | 1;
@@ -12,16 +11,16 @@ let commitRefPath = 'commit';
 let headRefPath = 'head';
 let branchesPath = 'branches';
 
-function refsInit(repositoryPath: string) {
+export function refsInit(repositoryPath: string) {
   headRefPath = path.join(repositoryPath, 'head');
   commitRefPath = path.join(repositoryPath, 'commit');
   branchesPath = path.join(repositoryPath, 'branches');
 }
 
-function getCommitRef(): string {
+export function getCommitRef(): string {
   return fs.readFileSync(commitRefPath, 'utf-8').toString();
 }
-function setCommitRef(hash: string) {
+export function setCommitRef(hash: string) {
   fs.writeFileSync(commitRefPath, hash, 'utf-8');
 }
 
@@ -31,6 +30,7 @@ function getHead() {
 function setHead(branchName: string) {
   fs.writeFileSync(headRefPath, branchName, 'utf-8');
 }
+
 function findHead(branchType: BranchType, hash: string) {
   //get list of head-hash and change it to map structure
   const branches = getBranches(branchType);
@@ -41,6 +41,7 @@ function findHead(branchType: BranchType, hash: string) {
   }
   return "";
 }
+
 
 function getBranches(branchType: BranchType) {
   const branches = fs.readdirSync(path.join(branchesPath, branchTypes[branchType]));
@@ -53,9 +54,12 @@ function readBranch(branchType: BranchType, branchName: string) {
 function createBranch(branchType: BranchType, branchName: string, hash: string) { 
   const branchPath = path.join(branchesPath, branchTypes[branchType], branchName);
   fs.mkdirSync(path.dirname(branchPath), { recursive: true });
-  fs.writeFileSync(branchPath, hash);
+  fs.writeFileSync(branchPath, hash, 'utf-8');
+  //get current branch and add new branch as a child
+  
 }
 // function removeBranch(branchType: BranchType, branchName: string) { }
+
 function setBranch(branchType: BranchType, branchName: string, hash: string) { 
   const branchPath = path.join(branchesPath, branchTypes[branchType], branchName);
   if (!fs.existsSync(branchPath)) {
@@ -65,7 +69,7 @@ function setBranch(branchType: BranchType, branchName: string, hash: string) {
   createBranch(branchType, branchName, hash);
 }
 
-function updateCurrentBranch() {
+export function updateCurrentBranch() {
   const commitHash = getCommitRef();
   let head = getHead();
 
@@ -79,7 +83,7 @@ function updateCurrentBranch() {
   }
 }
 
-function handleCheckout(hash: string) { 
+export function handleCheckout(hash: string) { 
   //find commit hash value that match with hash
   if (!readObject(hash)) {
     console.log('target commit object does not exist');
@@ -89,5 +93,3 @@ function handleCheckout(hash: string) {
   //find branch for this hash
   setHead(findHead(0, hash));
 }
-
-export { refsInit, handleCheckout };
