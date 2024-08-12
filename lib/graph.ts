@@ -1,4 +1,4 @@
-const drawCircle = ({ x, y, handleClick }: { x: number, y: number, handleClick: any }) => {
+export const drawCircle = ({ x, y, handleClick }: { x: number, y: number, handleClick: any }) => {
   const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
   circle.setAttribute("cx", x.toString());
   circle.setAttribute("cy", y.toString());
@@ -12,7 +12,7 @@ const drawCircle = ({ x, y, handleClick }: { x: number, y: number, handleClick: 
   return circle;
 };
 
-const drawLine = ({ fromX, fromY, toX, toY }: { fromX: number, fromY: number, toX: number, toY: number }) => {
+export const drawLine = ({ fromX, fromY, toX, toY }: { fromX: number, fromY: number, toX: number, toY: number }) => {
   const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
   line.setAttribute("x1", fromX.toString());
   line.setAttribute("y1", fromY.toString());
@@ -24,4 +24,6 @@ const drawLine = ({ fromX, fromY, toX, toY }: { fromX: number, fromY: number, to
   return line;
 };
 
-export { drawCircle, drawLine };
+export function getGraph(Branches: any) {
+  
+}
