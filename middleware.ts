@@ -9,7 +9,6 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
  
-// See "Matching Paths" below to learn more
-// export const config = {
-//   matcher: '/about/:path*',
-// }
+export const config = {
+  matcher: ['/:path'],  // Matches all paths except those starting with /select-folder
+}

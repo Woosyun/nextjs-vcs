@@ -24,6 +24,20 @@ export const drawLine = ({ fromX, fromY, toX, toY }: { fromX: number, fromY: num
   return line;
 };
 
-export function getGraph(Branches: any) {
+type Node = {
+  x: number,
+  y: number,
+  id: string,
+  parentNode: string
+};
+type Leaf = {
+  name: string,
+  id: string
+};
+type Graph = {
+  nodes: Node[],
+  leaves: Leaf[]
+};
+export function convertBranchesToGraph(Branches: any) {
   
 }

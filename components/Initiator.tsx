@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { navigate } from "@/lib/navigate";
 
 export default function Initiator() {
   const [dir, setDir] = useState<string>("");
@@ -27,6 +28,7 @@ export default function Initiator() {
     });
     const body = await res.json();
     console.log('(Initiator) message: ', body.message);
+    navigate('/show-graph');
   }
 
   const handleClose = () => {
