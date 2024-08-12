@@ -16,9 +16,19 @@ import { Label } from "./ui/label";
 export default function Initiator() {
   const [dir, setDir] = useState<string>("");
 
-  const handleOpen = () => {
-    console.log(dir);
+  const handleOpen = async () => {
+    console.log('new dir: ', dir);
+    const res = await fetch('/api/set-dir', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Specify JSON format
+      },
+      body: JSON.stringify({ directory: dir })
+    });
+    const body = await res.json();
+    console.log('(Initiator) message: ', body.message);
   }
+
   const handleClose = () => {
     console.log('close');
   }
@@ -36,7 +46,7 @@ export default function Initiator() {
       </CardContent>
 
       <CardFooter className="flex justify-between">
-      <Button onClick={handleOpen}>Start</Button>
+        <Button onClick={handleOpen}>Start</Button>
         <Button onClick={handleClose} variant="outline">Close</Button>
       </CardFooter>
     </Card>
