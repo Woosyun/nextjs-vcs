@@ -24,20 +24,9 @@ export const drawLine = ({ fromX, fromY, toX, toY }: { fromX: number, fromY: num
   return line;
 };
 
-type Node = {
-  x: number,
-  y: number,
-  id: string,
-  parentNode: string
-};
-type Leaf = {
-  name: string,
-  id: string
-};
-type Graph = {
-  nodes: Node[],
-  leaves: Leaf[]
-};
-export function convertBranchesToGraph(Branches: any) {
+// branch 정보를 받아서 바꾸는게 아니라 그냥 로컬에서 읽어온다고 생각해보자
+export function createLocalGraph() {
+  const branches: string[] = getBranches(0);
   
 }
+// assign location to graph
