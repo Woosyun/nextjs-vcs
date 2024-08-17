@@ -15,13 +15,13 @@ export default function Sidebar() {
   return (
     <Menubar>
       <MenubarMenu>
-        <Menubar1/>
+        <Navigator/>
       </MenubarMenu>
     </Menubar>
   )
 }
 
-function Menubar1() {
+function Navigator() {
   return (
     <>
       <MenubarTrigger>Navigation</MenubarTrigger>

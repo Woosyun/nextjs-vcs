@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { drawLine, drawCircle } from "@/lib/graph";
+import { drawLine, drawCircle } from "@/lib/svg";
 
 function Graph() {
   const svgRef = useRef<SVGSVGElement>(null);
