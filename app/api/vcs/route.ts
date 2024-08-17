@@ -1,5 +1,6 @@
 import vcsGraph from "@/lib/vcs";
+import { NextRequest, NextResponse } from "next/server";
 
-export function GET(req: any, res: any) {
-  return res.status(200).json({ vcsGraph });
+export function GET(req: NextRequest) {
+  return NextResponse.json({ vcsGraph });
 }
