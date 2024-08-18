@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Menubar,
   MenubarContent,
@@ -7,39 +9,40 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar"
+import Link from "next/link"
 
-export const Topbar = () => {
-  const li = [
-    { name: 'Documentation', shortcut: 'Ctrl+D' },
-    { name: 'Blog', shortcut: 'Ctrl+B' },
-    { name: 'Home', shortcut: 'Ctrl+H' }
-  ];
-  
+const menuItems = [
+  { label: "select folder", href: "/select-folder" },
+  { label: "graph", href: "/show-graph" },
+]
+
+export default function Topbar() {
   return (
     <Menubar>
-      {/* <AvatarIcon /> */}
-      <MenuItem triggerName="menu1" items={li} />
-      <MenubarSeparator />
-      
+      <MenubarMenu>
+        <Navigator/>
+      </MenubarMenu>
     </Menubar>
   )
 }
 
-const MenuItem = ({ triggerName, items }: {
-  triggerName: string,
-  items: any[]
-}) => {
+function Navigator() {
   return (
-    <MenubarMenu>
-      <MenubarTrigger>{triggerName}</MenubarTrigger>
+    <>
+      <MenubarTrigger>Navigation</MenubarTrigger>
       <MenubarContent>
-        {items.map((item, index) => (
-          <MenubarItem key={index}>
-            {/* <a href='/'>hello world</a> */}
-            {item.name} <MenubarShortcut>{item.shortcut}</MenubarShortcut>
-          </MenubarItem>
+        <MenubarItem>
+          <Link href="/">Home</Link>
+        </MenubarItem>
+        {menuItems.map((item, index) => (
+          <>
+            <MenubarSeparator />
+            <MenubarItem key={index}>
+              <Link href={item.href}>{item.label}</Link>
+            </MenubarItem>
+          </>
         ))}
       </MenubarContent>
-    </MenubarMenu>
+    </>
   )
 }

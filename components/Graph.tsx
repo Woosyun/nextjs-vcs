@@ -1,17 +1,20 @@
 'use client'
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { drawLine, drawCircle } from "@/lib/svg";
+import { drawLine, drawCircle } from "@/lib/graph/svg";
+import { useVCS } from "./VCSProvider";
 
 function Graph() {
   const svgRef = useRef<SVGSVGElement>(null);
   const triggerRef = useRef<any>(null);
   const [popover, setPopover] = useState({ x: 0, y: 0, isOpen: false });
   const [key, setKey] = useState(0);
+
+  const vcs = useVCS();
   
   useEffect(() => {
     if (svgRef.current) {
@@ -41,6 +44,7 @@ function Graph() {
       svg.appendChild(drawCircle({ x: midX, y: 350, handleClick: handleCircleClick }));
       svg.appendChild(drawLine({ fromX: midX, fromY: 370, toX: midX, toY: 480 }));
       svg.appendChild(drawCircle({ x: midX, y: 500, handleClick: handleCircleClick }));
+
     }
   }, []);
 
@@ -49,6 +53,7 @@ function Graph() {
       <h1>{`triggerRef.current is ${triggerRef.current ? "not null" : 'null'}`}</h1>
       <p>{`x: ${popover.x} y: ${popover.y} isOpen: ${popover.isOpen}`}</p>
       <svg ref={svgRef} width="100%" height="100%" className="bg-slate-300"></svg>
+
       <Popover open={popover.isOpen} onOpenChange={(open) => setPopover(prev => ({ ...prev, isOpen: open }))}>
         <PopoverTrigger asChild>
           <button key={key} ref={triggerRef} style={{ position: 'absolute', left: `${popover.x}px`, top: `${popover.y + 60}px`, transform: 'translate(-50%, -50%)'}}>

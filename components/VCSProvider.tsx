@@ -11,10 +11,9 @@ export const VCSProvider = ({ children }: {
   useEffect(() => {
     async function init() {
       const res = await fetch('/api/vcs');
-      const { vcsGraph } = await res.json();
-      // console.log(vcsGraph);
+      const { vcs } = await res.json();
 
-      setVCS(vcsGraph);
+      setVCS(vcs);
     }
     init();
   }, []);

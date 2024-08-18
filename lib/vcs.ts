@@ -1,6 +1,6 @@
-import VCSGraph from "./graph";
 import VCS from '@woosy2207/tsgit'
+import VCSGraph from '@/lib/graph/VCSGraph';
 
-const vcsGraph = new VCS();
+const vcs = new VCSGraph();
 
-export default vcsGraph;
+export default vcs;

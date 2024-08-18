@@ -1,6 +1,6 @@
 // import type { Metadata } from "next";
 // import { Inter } from "next/font/google";
-import Sidebar from "@/components/Sidebar";
+import Topbar from "@/components/Topbar";
 import "./globals.css";
 import { VCSProvider } from "@/components/VCSProvider";
 
@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body /*className={inter.className}*/>
         <VCSProvider>
-          <Sidebar/>
+          <Topbar/>
           {children}
         </VCSProvider>
       </body>

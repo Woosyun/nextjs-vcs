@@ -17,7 +17,7 @@ export default function Initiator() {
   const [dir, setDir] = useState<string>("");
 
   const handleOpen = async () => {
-    console.log('new dir: ', dir);
+    // console.log('new dir: ', dir);
     const res = await fetch('/api/set-dir', {
       method: 'POST',
       headers: {
