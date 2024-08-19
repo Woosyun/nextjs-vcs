@@ -1,26 +1,45 @@
 'use client'
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { drawLine, drawCircle } from "@/lib/graph/svg";
-import { useVCS } from "./VCSProvider";
+import { drawLinePrimitive, drawCirclePrimitive, renderGraph } from "@/lib/render";
+import { Graph, Hash, Commit, GraphPrimitive, DrawCircle, DrawLine } from "@/lib/types";
 
-function Graph() {
+const getGraph = async (localOrRemote: 0|1): Promise<Graph> => {
+  const res = await fetch('/api/get-graph', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ localOrRemote })
+  });
+
+  const graphPrimitive: GraphPrimitive = await res.json();
+  const graph: Graph = {
+    commits: new Map(graphPrimitive.commits),
+    edges: new Map(graphPrimitive.edges)
+  }
+  return graph;
+}
+
+function ViewGraph() {
   const svgRef = useRef<SVGSVGElement>(null);
   const triggerRef = useRef<any>(null);
   const [popover, setPopover] = useState({ x: 0, y: 0, isOpen: false });
   const [key, setKey] = useState(0);
 
-  const vcs = useVCS();
-  
   useEffect(() => {
     if (svgRef.current) {
       const svg = svgRef.current;
 
-      const handleCircleClick = (x: number, y: number) => {
+      while (svg.firstChild) {
+        svg.removeChild(svg.firstChild);
+      }
+
+      const handleCircleClick = (x: number, y: number, hash: Hash) => {
         setPopover({ x: x, y: y, isOpen: true });
         setKey(prevKey => prevKey + 1);
         if (triggerRef.current) {
@@ -29,22 +48,17 @@ function Graph() {
         } else {
           console.log('triggerRef.current is not null');
         }
+        console.log("target hash is ", hash);
       };
-
-      while (svg.firstChild) {
-        svg.removeChild(svg.firstChild);
+      const drawCircle: DrawCircle = drawCirclePrimitive(svgRef.current!, handleCircleClick);
+      const drawLine: DrawLine = drawLinePrimitive(svgRef.current!);
+      const draw = async () => {
+        getGraph(0).then((graph: Graph) => renderGraph(graph, drawCircle, drawLine))
       }
 
-      const midX = svgRef.current.getBoundingClientRect().width / 2;
-
-      svg.appendChild(drawCircle({ x: midX, y: 50, handleClick: handleCircleClick }));
-      svg.appendChild(drawLine({ fromX: midX, fromY: 70, toX: midX, toY: 180 }));
-      svg.appendChild(drawCircle({ x: midX, y: 200, handleClick: handleCircleClick }));
-      svg.appendChild(drawLine({ fromX: midX, fromY: 220, toX: midX, toY: 330 }));
-      svg.appendChild(drawCircle({ x: midX, y: 350, handleClick: handleCircleClick }));
-      svg.appendChild(drawLine({ fromX: midX, fromY: 370, toX: midX, toY: 480 }));
-      svg.appendChild(drawCircle({ x: midX, y: 500, handleClick: handleCircleClick }));
-
+      draw();
+    } else {
+      console.log('svgRef.current is falsy');
     }
   }, []);
 
@@ -67,4 +81,4 @@ function Graph() {
   );
 }
 
-export default Graph;
+export default ViewGraph;

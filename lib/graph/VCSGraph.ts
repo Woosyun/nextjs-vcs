@@ -4,6 +4,8 @@ import VCS from '@woosy2207/tsgit';
 type Node = {
   x: number, y: number
 };
+type DrawCircle = (x: number, y: number, hash: Hash) => void;
+type DrawLine = (from: {x: number, y: number}, to: {x: number, y: number}) => void;
 
 export default class VCSGraph extends VCS{
   edges: Map<Hash, Set<Hash>> = new Map();
@@ -24,6 +26,25 @@ export default class VCSGraph extends VCS{
     this.nodes.clear();
   }
 
+  public draw(drawCircle: DrawCircle, drawLine: DrawLine) {
+    const drawEdge = (from: Hash, to: Hash) => {
+      const fromNode = this.getNode(from);
+      const toNode = this.getNode(to);
+      drawLine({ x: fromNode.x, y: fromNode.y }, { x: toNode.x, y: toNode.y });
+    };
+    const drawNode = (hash: Hash) => {
+      const node = this.getNode(hash);
+      drawCircle(node.x, node.y, hash);
+
+      const childHashArray = this.getOutgoingEdges(hash);
+      childHashArray.forEach((childHash: Hash) => drawEdge(hash, childHash));
+      childHashArray.forEach((childHash: Hash) => drawNode(childHash));
+    };
+
+    const rootHash: Hash = this.getRootHash();
+    drawNode(rootHash);
+  }
+
   public create(localOrRemote: HeadType) {
     this.mapHeads(localOrRemote, this.addBranchToGraph);
 
@@ -39,7 +60,7 @@ export default class VCSGraph extends VCS{
       x, y
     };
     this.setNode(hash, node);
-
+    //TODO: consider the fact that there could be more than two children
     this.getOutgoingEdges(hash).forEach((childHash: Hash) => {
       this.createNode(childHash);
     })
@@ -75,6 +96,10 @@ export default class VCSGraph extends VCS{
     }
 
     f(hash);
+  }
+
+  private getRootHash(): Hash {
+    return this.edges.get(this.root)!.values().next().value;
   }
 
   public setNode(id: Hash, node: Node) {
@@ -113,7 +138,13 @@ export default class VCSGraph extends VCS{
   public setGapPixel(gap: number) {
     this.gap = gap;
   }
+  private applyGap(x: number, y: number): { x: number, y: number }{
+    return {x: x * this.gap, y: y * this.gap};
+  }
   public setRadiusPixel(radius: number) {
     this.radius = radius;
+  }
+  private applyRadius(r: number): number {
+    return r * this.radius;
   }
 }

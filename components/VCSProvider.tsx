@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const VCSContext = createContext<any>(undefined);
+const VCSContext = createContext<any>(null);
 
 export const VCSProvider = ({ children }: {
   children: React.ReactNode
@@ -17,6 +17,10 @@ export const VCSProvider = ({ children }: {
     }
     init();
   }, []);
+
+  if (vcs === null) {
+    return <div>Loading...</div>;
+  }
   
   return (
     <VCSContext.Provider value={vcs}>

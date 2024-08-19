@@ -35,12 +35,12 @@ function Navigator() {
           <Link href="/">Home</Link>
         </MenubarItem>
         {menuItems.map((item, index) => (
-          <>
+          <div key={index}>
             <MenubarSeparator />
-            <MenubarItem key={index}>
+            <MenubarItem>
               <Link href={item.href}>{item.label}</Link>
             </MenubarItem>
-          </>
+          </div>
         ))}
       </MenubarContent>
     </>

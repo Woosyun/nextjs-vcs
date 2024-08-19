@@ -2,7 +2,6 @@
 // import { Inter } from "next/font/google";
 import Topbar from "@/components/Topbar";
 import "./globals.css";
-import { VCSProvider } from "@/components/VCSProvider";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -19,10 +18,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body /*className={inter.className}*/>
-        <VCSProvider>
           <Topbar/>
           {children}
-        </VCSProvider>
       </body>
     </html>
   );
