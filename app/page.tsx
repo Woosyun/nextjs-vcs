@@ -1,7 +1,7 @@
-import Link from "next/link";
+import GraphViewer from "@/components/GraphViewer";
 
 export default function Page() {
   return (
-    <div>hell world</div>
+    <GraphViewer />
   )
 }

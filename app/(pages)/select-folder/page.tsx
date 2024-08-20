@@ -1,7 +1,7 @@
-import Initiator from "@/components/Initiator";
+import DirectorySelector from "@/components/DirectorySelector";
 
 export default function Page() {
   return (
-    <Initiator />
+    <DirectorySelector />
   )
 }

@@ -1,27 +1,26 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import vcs from '@/lib/vcs/vcs';
 import fs from 'fs';
 import path from 'path';
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  console.log('(set-dir) body: ', body);
+  const { directory } = await request.json();
+  console.log('(set-dir) directory:', directory);
 
-  // Error handling for missing or invalid directory
-  if (!isDirValid(body.directory)) {
-    if (!cookies().has('directory')) {
-      console.log('(set-dir) Invalid directory:', body.directory);
-      return NextResponse.json({ error: 'Invalid directory' }, { status: 400 });
-    } else {
-      console.log("(set-dir) Invalid directory, using cookie's directory:", cookies().get('directory')!.toString());
-      vcs.init(cookies().get('directory')!.toString());
-    }
+  const absoluteDirectory = makeAbsolutePath(directory);
+  console.log('(set-dir) absoluteDirectory:', absoluteDirectory);
+
+  if (!isDirValid(absoluteDirectory)) {
+    return NextResponse.json({ error: 'Invalid directory' }, { status: 400 });
   } else {
-    vcs.init(body.directory);
+    cookies().set('directory', absoluteDirectory);
+    return NextResponse.json({ message: 'Directory set' });
   }
+}
 
-  return NextResponse.json({ message: 'Directory set' });
+function makeAbsolutePath(dir: string): string {
+  // Convert to absolute path if it's not already
+  return path.isAbsolute(dir) ? dir : path.resolve(dir);
 }
 
 function isDirValid(dir: string): boolean {

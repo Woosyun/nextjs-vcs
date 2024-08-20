@@ -41,8 +41,13 @@ function findHeadNameByHash(headType: HeadType, hash: string): string {
   return "";
 }
 export function getHeadNames(headType: HeadType) {
-  const branches = fs.readdirSync(path.join(headsPath, headTypes[headType]));
-  return branches;
+  try {
+    const branches = fs.readdirSync(path.join(headsPath, headTypes[headType]));
+    return branches;
+  } catch (error: any) {
+    console.log('(getHeadNames) error: ', error.message);
+    return [];
+  }
 }
 export function getHead(headType: HeadType, headName: string) { 
   const branchPath = path.join(headsPath, headTypes[headType], headName);

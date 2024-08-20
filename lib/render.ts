@@ -1,7 +1,7 @@
 import { DrawCircle, DrawLine, Graph, Hash } from "./types";
 
 export function renderGraph(graph: Graph, drawCircle: DrawCircle, drawLine: DrawLine) {
-  console.log('graph: ', graph);
+  console.log('(renderGraph)graph:', graph);
 }
 
 export const drawCirclePrimitive = (svg: SVGSVGElement, handleClick: any): DrawCircle => {

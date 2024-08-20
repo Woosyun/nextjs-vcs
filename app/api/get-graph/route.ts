@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   }
 
   const graph: GraphPrimitive | null = getGraph(localOrRemote);
-  console.log('graph: ', graph);
+  console.log('(api/get-graph)graph: ', JSON.stringify(graph, null, 2));
   
   return NextResponse.json({ graph: graph });
 }

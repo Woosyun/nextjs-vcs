@@ -13,7 +13,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { navigate } from "@/lib/navigate";
 
-export default function Initiator() {
+export default function DirectorySelector() {
   const [dir, setDir] = useState<string>("");
 
   const handleOpen = async () => {
