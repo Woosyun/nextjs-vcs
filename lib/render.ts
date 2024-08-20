@@ -1,7 +1,29 @@
-import { DrawCircle, DrawLine, Graph, Hash } from "./types";
+import { DrawCircle, DrawLine, Graph, Hash, Node } from "./types";
+
+const gap = 50;
 
 export function renderGraph(graph: Graph, drawCircle: DrawCircle, drawLine: DrawLine) {
-  console.log('(renderGraph)graph:', graph);
+  try {
+    // console.log('(renderGraph)graph:', graph);
+  
+    const { nodes, edges }: Graph = graph;
+    nodes.forEach((node: Node, hash: Hash) => {
+      drawCircle(node.x * gap, node.y * gap, hash);
+    });
+    edges.forEach((vArray: Hash[], u: Hash) => {
+      if (u !== 'root') {
+        vArray.forEach((v: Hash) => {
+          const fromNode: Node = nodes.get(u)!;
+          const from = { x: fromNode.x, y: fromNode.y };
+          const toNode: Node = nodes.get(v)!;
+          const to = { x: toNode.x, y: toNode.y };
+          drawLine({ from, to });
+        });
+      }
+    });
+  } catch (error: any) {
+    console.log('(renderGraph) error: ', error.message);
+  }
 }
 
 export const drawCirclePrimitive = (svg: SVGSVGElement, handleClick: any): DrawCircle => {

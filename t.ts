@@ -1,7 +1,7 @@
-const edges: Map<string, Set<string>> = new Map();
+const m: Map<string, number> = new Map();
+m.set('a', 1);
+m.set('b', 2);
 
-edges.set('a', new Set(['b', 'c']));
-
-const a = Array.from(edges).map(([from, toS]) => [from, Array.from(toS)]);
-
-console.log(a);
+m.forEach((value: number, key: string) => {
+  console.log(key, value);
+});

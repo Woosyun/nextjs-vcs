@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/popover";
 import { drawLinePrimitive, drawCirclePrimitive, renderGraph } from "@/lib/render";
 import { Graph, Hash, Commit, GraphPrimitive, DrawCircle, DrawLine } from "@/lib/types";
-import vcs from "@/lib/vcs/vcs";
 
 const getGraph = async (localOrRemote: 0|1): Promise<Graph> => {
   const res = await fetch('/api/get-graph', {
@@ -18,12 +17,12 @@ const getGraph = async (localOrRemote: 0|1): Promise<Graph> => {
     body: JSON.stringify({ localOrRemote })
   });
 
-  const {graph: graphPrimitive} = await res.json();
+  const {graph: graphPrimitive}: {graph: GraphPrimitive} = await res.json();
   const graph: Graph = {
-    commits: new Map(graphPrimitive.commits),
+    nodes: new Map(graphPrimitive.nodes),
     edges: new Map(graphPrimitive.edges)
   }
-  console.log('(GraphViewer) commits:', graph.commits);
+  console.log('(GraphViewer) nodes:', graph.nodes);
   return graph;
 }
 
@@ -60,11 +59,10 @@ export default function GraphViewer() {
       };
       const drawCircle: DrawCircle = drawCirclePrimitive(svgRef.current!, handleCircleClick);
       const drawLine: DrawLine = drawLinePrimitive(svgRef.current!);
-      const draw = async () => {
-        initVCS().then(() => getGraph(0)).then((graph: Graph) => renderGraph(graph, drawCircle, drawLine))
-      }
-
-      draw();
+      
+      initVCS()
+        .then(() => getGraph(0))
+        .then((graph: Graph) => renderGraph(graph, drawCircle, drawLine));
     } else {
       console.log('svgRef.current is falsy');
     }
