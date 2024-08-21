@@ -29,8 +29,7 @@ export default function GraphViewer() {
   const svgRef = useRef<SVGSVGElement>(null);
   const triggerRef = useRef<any>(null);
   const [popover, setPopover] = useState({ x: 0, y: 0, isOpen: false });
-  const [key, setKey] = useState(0);
-  const [message, setMessage] = useState('');
+  const [popoverCount, setPopverCount] = useState(0);
   const [dir, setDir] = useState('');
 
   useEffect(() => {
@@ -45,18 +44,6 @@ export default function GraphViewer() {
     getDir();
   }, []);
   
-  const handleClick = async () => {
-    const res = await fetch('/api/vcs/commit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message })
-    });
-    const { message: resMessage } = await res.json();
-    console.log('resMessage:', resMessage);
-  }
-
   useEffect(() => {
     if (svgRef.current && !!dir) {
       const svg = svgRef.current;
@@ -67,7 +54,7 @@ export default function GraphViewer() {
 
       const handleCircleClick = (x: number, y: number, hash: Hash) => {
         setPopover({ x: x, y: y, isOpen: true });
-        setKey(prevKey => prevKey + 1);
+        setPopverCount(prevKey => prevKey + 1);
         if (triggerRef.current) {
           triggerRef.current.click();
           console.log('triggerRef.current is null'); 
@@ -102,7 +89,7 @@ export default function GraphViewer() {
         </div>
       </div>
 
-      <CommitViewer popover={popover} setPopover={setPopover} key={key} triggerRef={triggerRef} />
+      <CommitViewer popover={popover} setPopover={setPopover} popoverCount={popoverCount} triggerRef={triggerRef} />
     </div>
   );
 }

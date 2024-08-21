@@ -7,18 +7,18 @@ import {
 export default function CommitViewer({
   popover,
   setPopover,
-  key,
+  popoverCount,
   triggerRef,
 }: {
   popover: { x: number, y: number, isOpen: boolean },
   setPopover: (prev: any) => void,
-  key: number,
+  popoverCount: number,
   triggerRef: any,
 }) {
   return (
     <Popover open={popover.isOpen} onOpenChange={(open) => setPopover((prev: any) => ({ ...prev, isOpen: open }))}>
       <PopoverTrigger asChild>
-        <button key={key} ref={triggerRef} style={{ position: 'absolute', left: `${popover.x}px`, top: `${popover.y + 60}px`, transform: 'translate(-50%, -50%)'}}>
+        <button key={popoverCount} ref={triggerRef} style={{ position: 'absolute', left: `${popover.x}px`, top: `${popover.y + 60}px`, transform: 'translate(-50%, -50%)'}}>
         </button>
       </PopoverTrigger>
       <PopoverContent>
