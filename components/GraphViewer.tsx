@@ -1,12 +1,11 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+
 import { drawLinePrimitive, drawCirclePrimitive, renderGraph } from "@/lib/render";
 import { Graph, Hash, Commit, GraphPrimitive, DrawCircle, DrawLine } from "@/lib/types";
+import DirectorySelector from "./DirectorySelector";
+import CommitViewer from "./CommitViewer";
+import CommitGenerator from "./CommitGenerator";
 
 const getGraph = async (localOrRemote: 0|1): Promise<Graph> => {
   const res = await fetch('/api/get-graph', {
@@ -26,20 +25,40 @@ const getGraph = async (localOrRemote: 0|1): Promise<Graph> => {
   return graph;
 }
 
-const initVCS = async () => {
-  const res = await fetch('/api/vcs/init', {
-    method: 'GET'
-  });
-};
-
 export default function GraphViewer() {
   const svgRef = useRef<SVGSVGElement>(null);
   const triggerRef = useRef<any>(null);
   const [popover, setPopover] = useState({ x: 0, y: 0, isOpen: false });
   const [key, setKey] = useState(0);
+  const [message, setMessage] = useState('');
+  const [dir, setDir] = useState('');
 
   useEffect(() => {
-    if (svgRef.current) {
+    const getDir = async () => {
+      const res = await fetch('/api/dir/get');
+      const { directory } = await res.json();
+      if (!!directory) {
+        setDir(directory);
+      }
+    }
+
+    getDir();
+  }, []);
+  
+  const handleClick = async () => {
+    const res = await fetch('/api/vcs/commit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message })
+    });
+    const { message: resMessage } = await res.json();
+    console.log('resMessage:', resMessage);
+  }
+
+  useEffect(() => {
+    if (svgRef.current && !!dir) {
       const svg = svgRef.current;
 
       while (svg.firstChild) {
@@ -59,30 +78,32 @@ export default function GraphViewer() {
       };
       const drawCircle: DrawCircle = drawCirclePrimitive(svgRef.current!, handleCircleClick);
       const drawLine: DrawLine = drawLinePrimitive(svgRef.current!);
+      const render = async () => {
+        const graph = await getGraph(0);
+        renderGraph(graph, drawCircle, drawLine);
+      }
       
-      initVCS()
-        .then(() => getGraph(0))
-        .then((graph: Graph) => renderGraph(graph, drawCircle, drawLine));
+      render();
     } else {
       console.log('svgRef.current is falsy');
     }
-  }, []);
+  }, [dir]);
 
   return (
-    <div id="Graph" className="ml-auto w-4/5 h-full bg-white relative">
-      <h1>{`triggerRef.current is ${triggerRef.current ? "not null" : 'null'}`}</h1>
-      <p>{`x: ${popover.x} y: ${popover.y} isOpen: ${popover.isOpen}`}</p>
-      <svg ref={svgRef} width="100%" height="100%" className="bg-slate-300"></svg>
+    <div id="Graph" className="ml-auto w-full h-full bg-white relative">
+      <DirectorySelector setDir={setDir} dir={dir} />
 
-      <Popover open={popover.isOpen} onOpenChange={(open) => setPopover(prev => ({ ...prev, isOpen: open }))}>
-        <PopoverTrigger asChild>
-          <button key={key} ref={triggerRef} style={{ position: 'absolute', left: `${popover.x}px`, top: `${popover.y + 60}px`, transform: 'translate(-50%, -50%)'}}>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent>
-          <h1>hello world</h1>
-        </PopoverContent>
-      </Popover>
+      <div className="flex flex-row w-full h-full p-2 gap-2">
+        <div className="w-4/5 h-full">
+          <svg ref={svgRef} width="100%" height="100%" className="bg-slate-300"></svg>
+        </div>
+        <div className="flex flex-col-reverse w-1/5 h-full">
+          <CommitGenerator />
+        </div>
+      </div>
+
+      <CommitViewer popover={popover} setPopover={setPopover} key={key} triggerRef={triggerRef} />
     </div>
   );
 }
+

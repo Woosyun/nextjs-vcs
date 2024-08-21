@@ -1,0 +1,31 @@
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+// Helper function to check if the directory cookie exists
+function hasDirectoryCookie(request: NextRequest): boolean {
+  return !!request.cookies.get('directory');
+}
+
+// Middleware function
+export function middleware(request: NextRequest) {
+  console.log("middleware.ts is running");
+
+  const { pathname } = request.nextUrl;
+
+  // Avoid redirecting requests to /select-folder or static files
+  // const isStaticFile = pathname.startsWith('/_next/') || pathname.includes('.');
+  const isApiRoute = pathname.startsWith('/api/');
+
+  if (!pathname.startsWith('/select-folder') && !hasDirectoryCookie(request) && !isApiRoute) {
+    console.log('Redirecting to /select-folder because directory cookie is missing.');
+    return NextResponse.redirect(new URL('/select-folder', request.url));
+  }
+
+  console.log('(middleware) cookie already exists:', request.cookies.get('directory'));
+  return NextResponse.next();
+}
+
+// Configuration to match all paths except those starting with /select-folder or static files
+export const config = {
+  matcher: ['/((?!select-folder|_next|.*\\..*).*)'],  // Exclude /select-folder and static files
+}

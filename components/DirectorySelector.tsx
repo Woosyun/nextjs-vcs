@@ -11,23 +11,47 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { navigate } from "@/lib/navigate";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
-export default function DirectorySelector() {
-  const [dir, setDir] = useState<string>("");
-
+export default function DirectorySelector({
+  dir,
+  setDir
+}: {
+  dir: string,
+  setDir: (newDir: string) => void,
+  }) {
+  const [tempDir, setTempDir] = useState('')
+  
   const handleOpen = async () => {
-    // console.log('new dir: ', dir);
-    const res = await fetch('/api/set-dir', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Specify JSON format
-      },
-      body: JSON.stringify({ directory: dir })
-    });
-    const body = await res.json();
-    console.log('(Initiator) message: ', body.message);
-    navigate('/show-graph');
+    try {
+      console.log('new dir: ', tempDir);
+      const res = await fetch('/api/dir/set', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Specify JSON format
+        },
+        body: JSON.stringify({directory: tempDir}),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text(); // Get the response text (likely HTML)
+        throw new Error(`(DirectorySelector)Failed to set directory: ${errorText}`);
+      }
+      
+      const { message } = await res.json();
+      console.log('(DirectorySelector) message: ', message);
+      setDir(tempDir);
+    } catch (error: any) {
+      console.log('(DirectorySelector) error: ', error.message);
+    }
   }
 
   const handleClose = () => {
@@ -35,22 +59,19 @@ export default function DirectorySelector() {
   }
   
   return (
-    <Card className='border-solid border-2 border-black mx-auto mt-6 w-[400px]'>
-      <CardHeader>
-        <CardTitle>select directory</CardTitle>
-        {/* <CardDescription>versions of contents under selected directory will be controled</CardDescription> */}
-      </CardHeader>
-      
-      <CardContent>
-        <Label htmlFor="directory">directory path</Label>
-        <DirectoryPicker dir={dir} setDir={setDir} />
-      </CardContent>
-
-      <CardFooter className="flex justify-between">
-        <Button onClick={handleOpen}>Start</Button>
-        <Button onClick={handleClose} variant="outline">Close</Button>
-      </CardFooter>
-    </Card>
+    <Dialog open={!dir}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Directory Selector</DialogTitle>
+          <DialogDescription>select directory to control versions of contents</DialogDescription>
+        </DialogHeader>
+        <DirectoryPicker dir={tempDir} setDir={setTempDir} />
+        <DialogFooter>
+          <Button onClick={handleOpen}>Open</Button>
+          <Button onClick={handleClose} variant="outline">Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -58,14 +79,10 @@ const DirectoryPicker = ({ dir, setDir }: {
   dir: any,
   setDir: (newDir: string) => void
 }) => {
-  const handleChange = (e: any) => {
-    setDir(e.target.value);
-  }
-  
   return (
     <Input
       type="text"
-      onChange={handleChange}
+      onChange={(e: any) => setDir(e.target.value)}
     />
   )
 };

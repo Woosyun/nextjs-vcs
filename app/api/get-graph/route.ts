@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Node, Commit, Hash, LocalOrRemote, GraphPrimitive } from '@/lib/types';
 import vcs from "@/lib/vcs/vcs";
+import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
   const { localOrRemote } = await req.json();
@@ -11,8 +12,9 @@ export async function POST(req: NextRequest) {
     throw new Error('(get-graph)localOrRemote must be 0 or 1, localOrRemote: ', localOrRemote);
   }
 
+  vcs.init(cookies().get('directory')!.value);
   const graph: GraphPrimitive | null = getGraphPrimitive(localOrRemote);
-  console.log('(api/get-graph)graph: ', JSON.stringify(graph, null, 2));
+  // console.log('(api/get-graph)graph: ', JSON.stringify(graph, null, 2));
   
   return NextResponse.json({ graph: graph });
 }
@@ -47,7 +49,7 @@ function getGraphPrimitive(localOrRemote: LocalOrRemote): GraphPrimitive | null 
           addEdge(edges, 'root', hash);
           const rootNode: Node = {
             ...commit,
-            x: 0, y: 0
+            x: 1, y: 1
           };
           nodes.set(hash, rootNode);
         }

@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import vcs from '@/lib/vcs/vcs';
 import { NextResponse } from "next/server";
 
-export function GET() {
+export async function GET() {
   try {
     const directory = cookies().get('directory')!.value;
     console.log('(api/vcs/init) directory:', directory);

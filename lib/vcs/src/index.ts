@@ -7,7 +7,7 @@ import { createObject } from './object';
 
 let indexPath = 'INDEX';
 export function indexSetPath(repository: string){
-  indexPath = path.join(repository, 'index');
+  indexPath = path.join(repository, 'INDEX');
 }
 
 export function indexInit(workingPath: string) {
